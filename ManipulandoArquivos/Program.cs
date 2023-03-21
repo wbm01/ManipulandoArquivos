@@ -1,74 +1,88 @@
-﻿using System.Data;
-using ManipulandoArquivos;
+﻿using ManipulandoArquivos;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        string name;
-        char gender;
-        string file;
-        //string fixedtext = "Lorem ipsum dolor sit amet, @consectetur adipiscing elit. Duis ut nisi justo. @Nulla ac lorem ante. Praesent tellus est, feugiat et vulputate eu, @vehicula eu justo. Aenean nec fermentum ex. @Morbi urna urna, mollis quis malesuada sit amet"
 
-        Person person1 = CreatePerson();
-        Person person2 = CreatePerson();
 
-        WriteFile(person1);
-        WriteFile(person2);
+        string fixedtext = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nProin fermentum leo vel orci porta non pulvinar neque.\nVivamus arcu felis bibendum ut tristique et egestas quis.\nMalesuada proin libero nunc consequat interdum.\nQuisque sagittis purus sit amet.";
 
-        Console.Clear();
+        WriteFile(fixedtext);
 
-        Console.Write("Informe o nome do arquivo a ser lido: ");
-        file = Console.ReadLine();
-
-        var texto = ReadFile(file);
+        var texto = ReadFile("peste.txt");
 
         Console.WriteLine(texto);
 
-        void WriteFile(Person person)
+        Console.Write("Quantas linhas você quer ler? ");
+        var lines = int.Parse(Console.ReadLine());
+
+        var txt = ReadFileLines(lines);
+
+        Console.WriteLine(txt);
+
+        string ReadFileLines(int l)
+        {
+            StreamReader sr = new("peste.txt");
+            string txt = "";
+
+            List<string> srlist = new();
+            for (int i = 0; i < l; i++)
+            {
+                txt += sr.ReadLine() + "\n";
+            }
+
+            //foreach (var item in srlist)
+            //{
+            //    txt += item.ToString() + "\n";
+            //}
+
+            return txt;
+        }
+
+        void WriteFile(string text)
         {
             try
             {
-                if (File.Exists("backup.txt"))
+                if (File.Exists("peste.txt"))
                 {
-                    var temp = ReadFile("backup.txt");
-                    StreamWriter sw = new StreamWriter("backup.txt"); // Cria o arquivo
-                    sw.WriteLine(temp + person.ToString());
+                    StreamWriter sw = new("peste.txt");
+                    sw.WriteLine(text);
                     sw.Close();
                 }
                 else
                 {
-                    StreamWriter sw = new StreamWriter("backup.txt");
-                    sw.WriteLine(person.ToString());
+                    StreamWriter sw = new("peste.txt");
+                    sw.WriteLine(text);
                     sw.Close();
                 }
             }
-            catch (Exception) {
+            catch (Exception)
+            {
 
                 throw;
             }
             finally
             {
-                Console.WriteLine("Registro gravado com sucesso!");
+                Console.WriteLine("Registro Gravado com Sucesso!");
                 Thread.Sleep(1000);
             }
         }
 
-        string ReadFile(string file)
+        string ReadFile(string f)
         {
-                StreamReader sr = new StreamReader(file);
-                string text = "";
-
+            StreamReader sr = new StreamReader(f);
+            string text = "";
             try
             {
-
                 text = sr.ReadToEnd();
             }
             catch (Exception)
             {
+
                 throw;
             }
-            finally 
+            finally
             {
                 sr.Close();
             }
@@ -77,14 +91,13 @@ internal class Program
 
         Person CreatePerson()
         {
-
             Console.Write("Informe o nome da pessoa: ");
-            name = Console.ReadLine();
+            var name = Console.ReadLine();
+            Console.Write("\nInforme o genero da pessoa: ");
+            var gender = char.Parse(Console.ReadLine());
 
-            Console.Write("Informe o gênero da pessoa: ");
-            gender = char.Parse(Console.ReadLine());
-
-            return new Person(name, gender); // retorna uma nova pessoa para o objeto person
+            return new Person(name, gender);
         }
     }
+
 }
